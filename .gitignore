@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local database
+/data/*.sqlite*
+/data/backups/
+
+# local tunnel/runtime artifacts
+cloudflared.exe
+.cloudflared.log
+next-start.out.log
+next-start.err.log
