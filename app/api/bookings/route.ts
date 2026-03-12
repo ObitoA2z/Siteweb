@@ -85,10 +85,14 @@ export async function POST(request: NextRequest) {
       startAt: booking.startAt,
     };
 
-    await Promise.all([
+    // Emails enqueués de façon fire-and-forget — le worker les envoie en arrière-plan.
+    // On ne bloque PAS la réponse HTTP sur l'envoi SMTP.
+    Promise.all([
       sendBookingPendingEmail(mailPayload),
       sendAdminNewBookingRequestEmail(mailPayload),
-    ]);
+    ]).catch((err: unknown) => {
+      logInfo("booking_email_enqueue_error", { bookingId: booking.id, error: String(err) });
+    });
 
     addAuditLog({
       eventType: "booking.create_pending",
@@ -150,7 +154,7 @@ export async function POST(request: NextRequest) {
     }
     await reportServerError("booking_creation_failed", error, {
       slotId: parsed.data.slotId,
-      customerEmail: parsed.data.customerEmail,
+      customerEmail: maskEmail(parsed.data.customerEmail),
     });
     return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
   }

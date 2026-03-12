@@ -30,7 +30,10 @@ export async function GET(request: NextRequest) {
     pageSize: parsed.data.pageSize,
   });
 
-  return NextResponse.json(data);
+  // Ne jamais exposer textBody/htmlBody — ils contiennent des liens reset/verify sensibles.
+  const safeItems = data.items.map(({ textBody: _t, htmlBody: _h, ...item }) => item);
+
+  return NextResponse.json({ ...data, items: safeItems });
 }
 
 export async function POST(request: NextRequest) {

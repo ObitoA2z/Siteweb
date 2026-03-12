@@ -7,10 +7,11 @@ import { ADMIN_SESSION_COOKIE } from "@/lib/auth";
 function buildCsp(): string {
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
+    // Next.js App Router requiert 'unsafe-inline' pour les scripts inline d'hydratation.
+    // 'unsafe-eval' est retiré — il n'est pas requis en production (Turbopack dev seulement).
     "script-src": [
       "'self'",
       "'unsafe-inline'",
-      "'unsafe-eval'",
     ],
     "style-src": [
       "'self'",

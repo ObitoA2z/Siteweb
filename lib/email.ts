@@ -6,8 +6,20 @@ import {
   enqueueEmail,
   markOutboxEmailFailed,
   markOutboxEmailSent,
+  requeueStuckSendingEmails,
 } from "@/lib/emailOutbox";
 import { formatDateTime } from "@/lib/time";
+
+/** Échappe les caractères HTML pour éviter l'injection dans les emails HTML. */
+function escHtml(value: string | null | undefined): string {
+  if (!value) return "";
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 type MailPayload = {
   to: string;
@@ -93,6 +105,9 @@ async function sendMailNow(payload: MailPayload): Promise<void> {
 }
 
 async function processOutboxBatch(limit = 10): Promise<void> {
+  // Remettre en file les emails bloqués en 'sending' depuis plus de 10 min (worker crash)
+  requeueStuckSendingEmails(10);
+
   const batch = claimDueOutboxEmails(limit);
 
   for (const item of batch) {
@@ -157,11 +172,11 @@ export async function sendBookingPendingEmail(payload: BookingMailPayload): Prom
   ].join("\n");
 
   const html = `
-    <p>Bonjour ${payload.customerName},</p>
+    <p>Bonjour ${escHtml(payload.customerName)},</p>
     <p>Nous avons bien recu votre demande de reservation. Ceci est un email de confirmation de reception.</p>
     <ul>
-      <li><strong>Prestation:</strong> ${payload.serviceName}</li>
-      <li><strong>Creneau:</strong> ${appointment}</li>
+      <li><strong>Prestation:</strong> ${escHtml(payload.serviceName)}</li>
+      <li><strong>Creneau:</strong> ${escHtml(appointment)}</li>
       <li><strong>Numero:</strong> #${payload.bookingId}</li>
     </ul>
     <p>Votre demande est <strong>en attente de validation</strong> par l'admin.</p>
@@ -186,11 +201,11 @@ export async function sendBookingConfirmedEmail(payload: BookingMailPayload): Pr
   ].join("\n");
 
   const html = `
-    <p>Bonjour ${payload.customerName},</p>
+    <p>Bonjour ${escHtml(payload.customerName)},</p>
     <p>Bonne nouvelle: votre reservation a ete <strong>confirmee</strong>.</p>
     <ul>
-      <li><strong>Prestation:</strong> ${payload.serviceName}</li>
-      <li><strong>Creneau:</strong> ${appointment}</li>
+      <li><strong>Prestation:</strong> ${escHtml(payload.serviceName)}</li>
+      <li><strong>Creneau:</strong> ${escHtml(appointment)}</li>
       <li><strong>Numero:</strong> #${payload.bookingId}</li>
     </ul>
     <p>A bientot.</p>
@@ -221,12 +236,12 @@ export async function sendAdminNewBookingRequestEmail(payload: BookingMailPayloa
     <p><strong>Nouvelle demande de reservation en attente.</strong></p>
     <ul>
       <li><strong>Numero:</strong> #${payload.bookingId}</li>
-      <li><strong>Cliente:</strong> ${payload.customerName}</li>
-      <li><strong>Email cliente:</strong> ${payload.customerEmail}</li>
-      <li><strong>Telephone cliente:</strong> ${payload.customerPhone ?? "-"}</li>
-      <li><strong>Prestation:</strong> ${payload.serviceName}</li>
-      <li><strong>Creneau:</strong> ${appointment}</li>
-      <li><strong>Notes:</strong> ${payload.notes || "-"}</li>
+      <li><strong>Cliente:</strong> ${escHtml(payload.customerName)}</li>
+      <li><strong>Email cliente:</strong> ${escHtml(payload.customerEmail)}</li>
+      <li><strong>Telephone cliente:</strong> ${escHtml(payload.customerPhone ?? "-")}</li>
+      <li><strong>Prestation:</strong> ${escHtml(payload.serviceName)}</li>
+      <li><strong>Creneau:</strong> ${escHtml(appointment)}</li>
+      <li><strong>Notes:</strong> ${escHtml(payload.notes ?? "-")}</li>
     </ul>
   `;
 

@@ -1,0 +1,288 @@
+2026-03-12 11:38:24: node:internal/modules/esm/load:195
+2026-03-12 11:38:24:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:24:           ^
+2026-03-12 11:38:24: 
+2026-03-12 11:38:24: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:24:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:24:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:24:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:24:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:24:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:24:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:24:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:24:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:24:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:24:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:24: }
+2026-03-12 11:38:24: 
+2026-03-12 11:38:24: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1
+2026-03-12 11:38:25: node:internal/modules/esm/load:195
+2026-03-12 11:38:25:     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+2026-03-12 11:38:25:           ^
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'
+2026-03-12 11:38:25:     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:195:11)
+2026-03-12 11:38:25:     at defaultLoadSync (node:internal/modules/esm/load:142:3)
+2026-03-12 11:38:25:     at ModuleLoader.load (node:internal/modules/esm/loader:821:12)
+2026-03-12 11:38:25:     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:591:31)
+2026-03-12 11:38:25:     at #createModuleJob (node:internal/modules/esm/loader:623:36)
+2026-03-12 11:38:25:     at #getJobFromResolveResult (node:internal/modules/esm/loader:329:34)
+2026-03-12 11:38:25:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:294:41)
+2026-03-12 11:38:25:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-03-12 11:38:25:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:25) {
+2026-03-12 11:38:25:   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+2026-03-12 11:38:25: }
+2026-03-12 11:38:25: 
+2026-03-12 11:38:25: Node.js v24.11.1

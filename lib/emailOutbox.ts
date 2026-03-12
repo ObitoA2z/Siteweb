@@ -155,6 +155,29 @@ export function markOutboxEmailFailed(id: number, errorMessage: string): void {
   ).run(nextAttemptCount, errorMessage.slice(0, 2000), `+${delaySeconds} seconds`, id);
 }
 
+/**
+ * Remet en file les emails bloqués en statut 'sending' depuis plus de LEASE_MINUTES.
+ * Cas : worker crashé ou redémarré avant de marquer l'email sent/failed.
+ */
+export function requeueStuckSendingEmails(leaseMinutes = 10): number {
+  const db = getDb();
+  const result = db
+    .prepare(
+      `
+      UPDATE email_outbox
+      SET
+        status = 'retry',
+        locked_at = NULL,
+        next_attempt_at = datetime('now'),
+        updated_at = datetime('now')
+      WHERE status = 'sending'
+        AND datetime(locked_at) <= datetime('now', ?)
+      `,
+    )
+    .run(`-${leaseMinutes} minutes`);
+  return result.changes;
+}
+
 export function retryOutboxEmail(id: number): boolean {
   const db = getDb();
   const updated = db.prepare(

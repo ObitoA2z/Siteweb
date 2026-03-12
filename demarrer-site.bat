@@ -1,25 +1,14 @@
 @echo off
-title Atelier Cils Paris - Serveur
+title Atelier Cils Paris - Demarrage
+cd /d "C:\Users\2596535\Desktop\Siteweb\Siteweb"
 
-echo ================================
-echo   ATELIER CILS PARIS
-echo   Demarrage du site...
-echo ================================
-echo.
+echo Demarrage des services Atelier Cils Paris...
 
-cd /d "%~dp0"
-
-echo [1/2] Demarrage du serveur Next.js sur le port 3000...
-start "Site Next.js" cmd /k "npm run start"
-
-echo [2/2] En attente du demarrage (5 secondes)...
+:: Attendre que le réseau soit prêt
 timeout /t 5 /nobreak >nul
 
-echo.
-echo ================================
-echo   Serveur demarre !
-echo   Acces local : http://localhost:3000
-echo ================================
-echo.
-echo Laisse cette fenetre ouverte tant que le site doit etre accessible.
-pause
+:: Démarrer PM2 avec tous les services
+pm2 start ecosystem.config.js
+
+echo Services demarres. Ferme cette fenetre.
+timeout /t 3 /nobreak >nul

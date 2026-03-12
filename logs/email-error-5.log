@@ -1,0 +1,304 @@
+2026-03-12 11:38:46: node:internal/modules/esm/loader:412
+2026-03-12 11:38:46:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:46:             ^
+2026-03-12 11:38:46: 
+2026-03-12 11:38:46: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:46:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:46:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:46:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:46:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:46:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:46:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:46:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:46:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:46:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:46:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:46:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:46: }
+2026-03-12 11:38:46: 
+2026-03-12 11:38:46: Node.js v24.11.1
+2026-03-12 11:38:47: node:internal/modules/esm/loader:412
+2026-03-12 11:38:47:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:47:             ^
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:47:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:47:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:47:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:47:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:47:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:47:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:47:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:47:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:47:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:47:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:47:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:47: }
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Node.js v24.11.1
+2026-03-12 11:38:47: node:internal/modules/esm/loader:412
+2026-03-12 11:38:47:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:47:             ^
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:47:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:47:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:47:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:47:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:47:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:47:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:47:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:47:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:47:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:47:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:47:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:47: }
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Node.js v24.11.1
+2026-03-12 11:38:47: node:internal/modules/esm/loader:412
+2026-03-12 11:38:47:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:47:             ^
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:47:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:47:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:47:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:47:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:47:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:47:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:47:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:47:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:47:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:47:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:47:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:47: }
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Node.js v24.11.1
+2026-03-12 11:38:47: node:internal/modules/esm/loader:412
+2026-03-12 11:38:47:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:47:             ^
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:47:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:47:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:47:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:47:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:47:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:47:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:47:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:47:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:47:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:47:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:47:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:47: }
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Node.js v24.11.1
+2026-03-12 11:38:47: node:internal/modules/esm/loader:412
+2026-03-12 11:38:47:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:47:             ^
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:47:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:47:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:47:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:47:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:47:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:47:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:47:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:47:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:47:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:47:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:47:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:47: }
+2026-03-12 11:38:47: 
+2026-03-12 11:38:47: Node.js v24.11.1
+2026-03-12 11:38:48: node:internal/modules/esm/loader:412
+2026-03-12 11:38:48:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:48:             ^
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:48:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:48:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:48:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:48:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:48:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:48:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:48:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:48:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:48:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:48:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:48:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:48: }
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Node.js v24.11.1
+2026-03-12 11:38:48: node:internal/modules/esm/loader:412
+2026-03-12 11:38:48:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:48:             ^
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:48:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:48:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:48:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:48:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:48:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:48:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:48:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:48:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:48:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:48:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:48:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:48: }
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Node.js v24.11.1
+2026-03-12 11:38:48: node:internal/modules/esm/loader:412
+2026-03-12 11:38:48:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:48:             ^
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:48:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:48:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:48:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:48:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:48:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:48:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:48:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:48:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:48:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:48:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:48:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:48: }
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Node.js v24.11.1
+2026-03-12 11:38:48: node:internal/modules/esm/loader:412
+2026-03-12 11:38:48:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:48:             ^
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:48:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:48:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:48:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:48:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:48:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:48:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:48:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:48:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:48:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:48:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:48:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:48: }
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Node.js v24.11.1
+2026-03-12 11:38:48: node:internal/modules/esm/loader:412
+2026-03-12 11:38:48:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:48:             ^
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:48:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:48:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:48:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:48:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:48:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:48:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:48:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:48:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:48:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:48:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:48:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:48: }
+2026-03-12 11:38:48: 
+2026-03-12 11:38:48: Node.js v24.11.1
+2026-03-12 11:38:49: node:internal/modules/esm/loader:412
+2026-03-12 11:38:49:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:49:             ^
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:49:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:49:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:49:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:49:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:49:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:49:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:49:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:49:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:49:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:49:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:49:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:49: }
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Node.js v24.11.1
+2026-03-12 11:38:49: node:internal/modules/esm/loader:412
+2026-03-12 11:38:49:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:49:             ^
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:49:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:49:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:49:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:49:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:49:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:49:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:49:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:49:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:49:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:49:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:49:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:49: }
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Node.js v24.11.1
+2026-03-12 11:38:49: node:internal/modules/esm/loader:412
+2026-03-12 11:38:49:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:49:             ^
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:49:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:49:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:49:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:49:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:49:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:49:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:49:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:49:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:49:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:49:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:49:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:49: }
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Node.js v24.11.1
+2026-03-12 11:38:49: node:internal/modules/esm/loader:412
+2026-03-12 11:38:49:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:49:             ^
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:49:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:49:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:49:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:49:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:49:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:49:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:49:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:49:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:49:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:49:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:49:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:49: }
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Node.js v24.11.1
+2026-03-12 11:38:49: node:internal/modules/esm/loader:412
+2026-03-12 11:38:49:       throw new ERR_REQUIRE_CYCLE_MODULE(message);
+2026-03-12 11:38:49:             ^
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\2596535\Desktop\Siteweb\Siteweb\scripts\email-worker-loop.ts in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+2026-03-12 11:38:49:     at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:412:13)
+2026-03-12 11:38:49:     at loadESMFromCJS (node:internal/modules/cjs/loader:1578:24)
+2026-03-12 11:38:49:     at Module._compile (node:internal/modules/cjs/loader:1743:5)
+2026-03-12 11:38:49:     at Object..js (node:internal/modules/cjs/loader:1893:10)
+2026-03-12 11:38:49:     at Module.load (node:internal/modules/cjs/loader:1481:32)
+2026-03-12 11:38:49:     at Module._load (node:internal/modules/cjs/loader:1300:12)
+2026-03-12 11:38:49:     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+2026-03-12 11:38:49:     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+2026-03-12 11:38:49:     at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:336:3)
+2026-03-12 11:38:49:     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:239:7) {
+2026-03-12 11:38:49:   code: 'ERR_REQUIRE_CYCLE_MODULE'
+2026-03-12 11:38:49: }
+2026-03-12 11:38:49: 
+2026-03-12 11:38:49: Node.js v24.11.1
