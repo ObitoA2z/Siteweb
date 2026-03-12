@@ -1,3 +1,4 @@
+import "./load-env";
 import { bootstrapAdminUser, runPendingMigrations } from "../lib/db";
 
 try {

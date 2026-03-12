@@ -9,6 +9,14 @@ type Props = {
   initialBookings: Booking[];
 };
 
+const statusLabels: Record<string, { label: string; color: string }> = {
+  pending: { label: "En attente", color: "text-[#e8a87c]" },
+  confirmed: { label: "Confirme", color: "text-[#5f8f6a]" },
+  cancel_requested: { label: "Annulation demandee", color: "text-[#8f2e4f]" },
+  cancelled: { label: "Annule", color: "text-[#8a6578]" },
+  no_show: { label: "Absent", color: "text-[#8a6578]" },
+};
+
 export function CustomerBookingsList({ initialBookings }: Props) {
   const [bookings, setBookings] = useState<Booking[]>(initialBookings);
   const [busyBookingId, setBusyBookingId] = useState<number | null>(null);
@@ -36,49 +44,76 @@ export function CustomerBookingsList({ initialBookings }: Props) {
     }
 
     setBookings((prev) =>
-      prev.map((booking) => (booking.id === bookingId ? { ...booking, status: "cancel_requested" } : booking)),
+      prev.map((booking) =>
+        booking.id === bookingId ? { ...booking, status: "cancel_requested" } : booking,
+      ),
     );
     setMessage("Demande d'annulation envoyee a l'admin.");
     setBusyBookingId(null);
   }
 
   if (bookings.length === 0) {
-    return <p className="text-sm text-[#5f4754]">Aucune reservation trouvee pour ce compte.</p>;
+    return (
+      <div className="text-center py-8 space-y-3">
+        <p className="text-3xl">📅</p>
+        <p className="text-sm text-[#5f4754]">Aucune reservation trouvee pour ce compte.</p>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-3">
-      {bookings.map((booking) => (
-        <article
-          key={booking.id}
-          className="flex flex-col gap-2 rounded-xl border border-[#2d1e2718] bg-white/80 p-4 md:flex-row md:items-center md:justify-between"
-        >
-          <div>
-            <p className="font-semibold">{booking.serviceName}</p>
-            <p className="text-sm text-[#5f4754]">{formatDateTime(booking.startAt)}</p>
-            {booking.notes ? <p className="mt-1 text-xs text-[#6b4a59]">Note: {booking.notes}</p> : null}
-          </div>
+      {bookings.map((booking) => {
+        const statusInfo = statusLabels[booking.status] ?? {
+          label: booking.status,
+          color: "text-[#5f4754]",
+        };
+        return (
+          <article
+            key={booking.id}
+            className="rounded-xl border border-[#2d1e2718] bg-white/80 p-4 space-y-3"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <p className="font-semibold text-sm sm:text-base leading-snug">
+                {booking.serviceName}
+              </p>
+              <span
+                className={`text-xs font-bold uppercase tracking-wide flex-shrink-0 ${statusInfo.color}`}
+              >
+                {statusInfo.label}
+              </span>
+            </div>
 
-          <div className="flex flex-col items-start gap-2 md:items-end">
-            <p className="text-sm font-bold uppercase tracking-wide text-[#5f4754]">{booking.status}</p>
+            <p className="text-sm text-[#5f4754]">{formatDateTime(booking.startAt)}</p>
+
+            {booking.notes ? (
+              <p className="text-xs text-[#6b4a59] bg-[#ffd7c2]/20 rounded-lg px-3 py-2">
+                Note: {booking.notes}
+              </p>
+            ) : null}
+
             {booking.status === "confirmed" ? (
               <button
                 type="button"
                 onClick={() => requestCancellation(booking.id)}
                 disabled={busyBookingId === booking.id}
-                className="rounded-full border border-[#8f2e4f44] px-3 py-2 text-xs font-semibold text-[#8f2e4f]"
+                className="w-full rounded-full border border-[#8f2e4f44] px-3 py-3 text-sm font-semibold text-[#8f2e4f] min-h-[44px]"
               >
-                {busyBookingId === booking.id ? "Envoi..." : "Demander annulation"}
+                {busyBookingId === booking.id ? "Envoi..." : "Demander l'annulation"}
               </button>
             ) : null}
             {booking.status === "cancel_requested" ? (
-              <p className="text-xs text-[#8f2e4f]">Demande envoyee, en attente de reponse admin.</p>
+              <p className="text-xs text-[#8f2e4f] bg-[#8f2e4f08] rounded-lg px-3 py-2">
+                Demande envoyee, en attente de reponse admin.
+              </p>
             ) : null}
-          </div>
-        </article>
-      ))}
+          </article>
+        );
+      })}
 
-      {message ? <p className="text-sm font-semibold text-[#5f4754]">{message}</p> : null}
+      {message ? (
+        <p className="text-sm font-semibold text-[#5f4754] text-center py-2">{message}</p>
+      ) : null}
     </div>
   );
 }

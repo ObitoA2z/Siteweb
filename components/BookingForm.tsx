@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { CalendarPicker } from "@/components/CalendarPicker";
@@ -24,6 +24,7 @@ export function BookingForm({
   initialCustomerEmail,
 }: Props) {
   const router = useRouter();
+  const availabilityRequestId = useRef(0);
   const today = useMemo(() => initialDate, [initialDate]);
   const [serviceId, setServiceId] = useState<number>(services[0]?.id ?? 0);
   const [date, setDate] = useState<string>(initialDate);
@@ -51,28 +52,41 @@ export function BookingForm({
       return;
     }
 
+    const requestId = ++availabilityRequestId.current;
     setLoadingSlots(true);
     setMessage("");
 
-    fetch(`/api/availability?serviceId=${nextServiceId}&date=${nextDate}`)
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error("Impossible de recuperer les creneaux.");
-        }
-        const data = (await response.json()) as SlotOption[];
-        setSlots(data);
-        setSelectedSlotId(null);
-      })
-      .catch((error: unknown) => {
-        setSlots([]);
-        setSelectedSlotId(null);
-        setMessage(error instanceof Error ? error.message : "Erreur inconnue.");
-      })
-      .finally(() => setLoadingSlots(false));
+    try {
+      const response = await fetch(`/api/availability?serviceId=${nextServiceId}&date=${nextDate}`);
+      if (!response.ok) {
+        throw new Error("Impossible de recuperer les creneaux.");
+      }
+
+      const data = (await response.json()) as SlotOption[];
+      if (requestId !== availabilityRequestId.current) {
+        return;
+      }
+      setSlots(data);
+      setSelectedSlotId(null);
+    } catch (error) {
+      if (requestId !== availabilityRequestId.current) {
+        return;
+      }
+      setSlots([]);
+      setSelectedSlotId(null);
+      setMessage(error instanceof Error ? error.message : "Erreur inconnue.");
+    } finally {
+      if (requestId === availabilityRequestId.current) {
+        setLoadingSlots(false);
+      }
+    }
   }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) {
+      return;
+    }
     if (!selectedSlotId) {
       setMessage("Selectionne un creneau.");
       return;
@@ -81,41 +95,45 @@ export function BookingForm({
     setSubmitting(true);
     setMessage("");
 
-    const response = await fetch("/api/bookings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        slotId: selectedSlotId,
-        customerName: formData.customerName,
-        customerPhone: formData.customerPhone,
-        customerEmail: formData.customerEmail,
-        notes: formData.notes,
-        website: formData.website,
-        formStartedAt,
-      }),
-    });
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slotId: selectedSlotId,
+          customerName: formData.customerName,
+          customerPhone: formData.customerPhone,
+          customerEmail: formData.customerEmail,
+          notes: formData.notes,
+          website: formData.website,
+          formStartedAt,
+        }),
+      });
 
-    const data = (await response.json().catch(() => ({}))) as {
-      bookingId?: number;
-      waitlistId?: number;
-      status?: string;
-      message?: string;
-      error?: string;
-    };
+      const data = (await response.json().catch(() => ({}))) as {
+        bookingId?: number;
+        waitlistId?: number;
+        status?: string;
+        message?: string;
+        error?: string;
+      };
 
-    if (!response.ok) {
-      setMessage(data.error ?? "Erreur lors de la reservation.");
+      if (!response.ok) {
+        setMessage(data.error ?? "Erreur lors de la reservation.");
+        return;
+      }
+
+      if (data.status === "waitlisted") {
+        setMessage(data.message ?? "Ajoutee a la liste d'attente.");
+        return;
+      }
+
+      router.push(`/booking/confirmation?bookingId=${data.bookingId ?? ""}`);
+    } catch {
+      setMessage("Erreur reseau. Reessaie dans quelques secondes.");
+    } finally {
       setSubmitting(false);
-      return;
     }
-
-    if (data.status === "waitlisted") {
-      setMessage(data.message ?? "Ajoutee a la liste d'attente.");
-      setSubmitting(false);
-      return;
-    }
-
-    router.push(`/booking/confirmation?bookingId=${data.bookingId ?? ""}`);
   }
 
   return (
@@ -171,6 +189,7 @@ export function BookingForm({
           <input
             id="name"
             required
+            autoComplete="name"
             value={formData.customerName}
             onChange={(event) => setFormData((prev) => ({ ...prev, customerName: event.target.value }))}
           />
@@ -181,7 +200,9 @@ export function BookingForm({
           </label>
           <input
             id="phone"
+            type="tel"
             required
+            autoComplete="tel"
             value={formData.customerPhone}
             onChange={(event) => setFormData((prev) => ({ ...prev, customerPhone: event.target.value }))}
           />
@@ -195,6 +216,7 @@ export function BookingForm({
             type="email"
             required
             readOnly={emailLocked}
+            autoComplete="email"
             value={formData.customerEmail}
             onChange={(event) => setFormData((prev) => ({ ...prev, customerEmail: event.target.value }))}
           />
@@ -233,7 +255,7 @@ export function BookingForm({
 
       {message ? <p className="text-sm font-semibold text-[#8f2e4f]">{message}</p> : null}
 
-      <button type="submit" disabled={submitting} className="btn-main w-full md:w-auto">
+      <button type="submit" disabled={submitting || !selectedService} className="btn-main w-full md:w-auto">
         {submitting ? "Reservation en cours..." : "Confirmer la reservation"}
       </button>
     </form>

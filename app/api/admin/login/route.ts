@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { authenticator } from "otplib";
 
 import { clearAdminLoginFailures, getAdminLoginLockSeconds, registerAdminLoginFailure } from "@/lib/adminLoginLock";
 import { attachAdminCsrfCookie, ensureAdminCsrfToken, getAdminSession } from "@/lib/auth";
 import { verifyAdminCredentials } from "@/lib/db";
+import { env } from "@/lib/env";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp, requireBodySize, requireJsonRequest, requireTrustedOrigin } from "@/lib/security";
 import { adminLoginSchema } from "@/lib/validation";
@@ -26,7 +28,7 @@ export async function POST(request: NextRequest) {
   }
 
   const ip = getClientIp(request);
-  const rate = checkRateLimit(`admin-login:${ip}`, 10, 10 * 60_000);
+  const rate = await checkRateLimit(`admin-login:${ip}`, 10, 10 * 60_000);
   if (!rate.ok) {
     return NextResponse.json({ error: "Trop de tentatives de connexion. Reessaie plus tard." }, { status: 429 });
   }
@@ -52,6 +54,16 @@ export async function POST(request: NextRequest) {
     registerAdminLoginFailure(lockKey);
     return NextResponse.json({ error: "Nom d'utilisateur ou mot de passe incorrect." }, { status: 401 });
   }
+
+  if (env.ADMIN_TOTP_SECRET) {
+    const otpCode = (parsed.data.otp ?? "").trim();
+    const otpValid = otpCode ? authenticator.check(otpCode, env.ADMIN_TOTP_SECRET) : false;
+    if (!otpValid) {
+      registerAdminLoginFailure(lockKey);
+      return NextResponse.json({ error: "Code 2FA invalide." }, { status: 401 });
+    }
+  }
+
   clearAdminLoginFailures(lockKey);
 
   const session = await getAdminSession();

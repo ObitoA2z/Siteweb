@@ -7,9 +7,12 @@ import {
   createWaitlistEntry,
   CustomerBlockedError,
   DailyLimitExceededError,
+  getCustomerUserByEmail,
   getSlotById,
 } from "@/lib/db";
 import { sendAdminNewBookingRequestEmail, sendBookingPendingEmail } from "@/lib/email";
+import { logInfo } from "@/lib/logger";
+import { reportServerError } from "@/lib/monitoring";
 import { maskEmail, maskPhone } from "@/lib/privacy";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp, requireBodySize, requireJsonRequest, requireTrustedOrigin } from "@/lib/security";
@@ -33,11 +36,11 @@ export async function POST(request: NextRequest) {
   }
 
   const ip = getClientIp(request);
-  const minuteRate = checkRateLimit(`book:min:${ip}`, 5, 60_000);
+  const minuteRate = await checkRateLimit(`book:min:${ip}`, 5, 60_000);
   if (!minuteRate.ok) {
     return NextResponse.json({ error: "Trop de tentatives. Reessaie dans 1 minute." }, { status: 429 });
   }
-  const hourRate = checkRateLimit(`book:hour:${ip}`, 30, 60 * 60_000);
+  const hourRate = await checkRateLimit(`book:hour:${ip}`, 30, 60 * 60_000);
   if (!hourRate.ok) {
     return NextResponse.json({ error: "Trop de tentatives. Reessaie dans 1 heure." }, { status: 429 });
   }
@@ -53,6 +56,14 @@ export async function POST(request: NextRequest) {
   }
   if (parsed.data.formStartedAt && Date.now() - parsed.data.formStartedAt < 2_000) {
     return NextResponse.json({ error: "Formulaire envoye trop rapidement." }, { status: 400 });
+  }
+
+  const existingUser = getCustomerUserByEmail(parsed.data.customerEmail);
+  if (existingUser && !existingUser.emailVerifiedAt) {
+    return NextResponse.json(
+      { error: "Adresse email non verifiee. Verifie ton email avant de reserver." },
+      { status: 403 },
+    );
   }
 
   try {
@@ -93,7 +104,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log(`[booking] created id=${booking.id} slotId=${parsed.data.slotId} status=pending`);
+    logInfo("booking_created_pending", { bookingId: booking.id, slotId: parsed.data.slotId });
 
     return NextResponse.json({ bookingId: booking.id, status: "pending" }, { status: 201 });
   } catch (error) {
@@ -137,7 +148,10 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ error: "Creneau indisponible.", code: "SLOT_TAKEN" }, { status: 409 });
     }
-    console.error("[booking] creation failed", error);
+    await reportServerError("booking_creation_failed", error, {
+      slotId: parsed.data.slotId,
+      customerEmail: parsed.data.customerEmail,
+    });
     return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
   }
 }

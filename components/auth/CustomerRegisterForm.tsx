@@ -11,30 +11,55 @@ export function CustomerRegisterForm() {
     email: "",
     phone: "",
     password: "",
+    website: "",
   });
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [formStartedAt] = useState<number>(() => Date.now());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (loading) {
+      return;
+    }
     setLoading(true);
     setError("");
 
-    const response = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    const data = (await response.json().catch(() => ({}))) as { error?: string };
-    if (!response.ok) {
-      setError(data.error ?? "Inscription impossible.");
+    if (form.password !== confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
       setLoading(false);
       return;
     }
 
-    router.push(`/account/login?email=${encodeURIComponent(form.email)}`);
-    router.refresh();
+    try {
+      const normalizedEmail = form.email.trim().toLowerCase();
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: normalizedEmail,
+          phone: form.phone,
+          password: form.password,
+          website: form.website,
+          formStartedAt,
+        }),
+      });
+
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) {
+        setError(data.error ?? "Inscription impossible.");
+        return;
+      }
+
+      router.push(`/account/login?email=${encodeURIComponent(normalizedEmail)}&registered=1`);
+      router.refresh();
+    } catch {
+      setError("Erreur reseau. Reessaie dans quelques secondes.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -51,6 +76,8 @@ export function CustomerRegisterForm() {
         <input
           id="register-name"
           value={form.name}
+          maxLength={100}
+          autoComplete="name"
           onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
           required
         />
@@ -64,6 +91,8 @@ export function CustomerRegisterForm() {
           id="register-email"
           type="email"
           value={form.email}
+          maxLength={160}
+          autoComplete="email"
           onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
           required
         />
@@ -75,6 +104,10 @@ export function CustomerRegisterForm() {
         </label>
         <input
           id="register-phone"
+          type="tel"
+          inputMode="tel"
+          maxLength={40}
+          autoComplete="tel"
           value={form.phone}
           onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))}
         />
@@ -88,6 +121,8 @@ export function CustomerRegisterForm() {
           id="register-password"
           type="password"
           value={form.password}
+          maxLength={128}
+          autoComplete="new-password"
           onChange={(event) => setForm((prev) => ({ ...prev, password: event.target.value }))}
           minLength={12}
           required
@@ -95,6 +130,33 @@ export function CustomerRegisterForm() {
         <p className="text-xs text-[#6b4a59]">
           12+ caracteres, avec majuscule, minuscule, chiffre et caractere special.
         </p>
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="register-password-confirm" className="block text-sm font-semibold">
+          Confirmer le mot de passe
+        </label>
+        <input
+          id="register-password-confirm"
+          type="password"
+          value={confirmPassword}
+          maxLength={128}
+          autoComplete="new-password"
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          minLength={12}
+          required
+        />
+      </div>
+
+      <div className="hidden" aria-hidden>
+        <label htmlFor="register-website">Ne pas remplir</label>
+        <input
+          id="register-website"
+          tabIndex={-1}
+          autoComplete="off"
+          value={form.website}
+          onChange={(event) => setForm((prev) => ({ ...prev, website: event.target.value }))}
+        />
       </div>
 
       {error ? <p className="text-sm font-semibold text-[#8f2e4f]">{error}</p> : null}

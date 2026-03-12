@@ -1,6 +1,7 @@
 export type SlotStatus = "open" | "booked" | "blocked";
 export type BookingStatus = "pending" | "confirmed" | "cancel_requested" | "cancelled" | "no_show";
 export type WaitlistStatus = "pending" | "contacted" | "converted" | "cancelled";
+export type EmailOutboxStatus = "pending" | "retry" | "sending" | "sent" | "failed";
 
 export interface Service {
   id: number;
@@ -42,6 +43,7 @@ export interface CustomerUser {
   phone: string | null;
   passwordHash: string | null;
   googleId: string | null;
+  emailVerifiedAt: string | null;
   createdAt: string;
 }
 
@@ -101,4 +103,29 @@ export interface WaitlistEntry {
   notes: string | null;
   status: WaitlistStatus;
   createdAt: string;
+}
+
+export interface EmailOutboxItem {
+  id: number;
+  category: string;
+  recipient: string;
+  subject: string;
+  textBody: string;
+  htmlBody: string;
+  status: EmailOutboxStatus;
+  attemptCount: number;
+  maxAttempts: number;
+  lastError: string | null;
+  nextAttemptAt: string;
+  lockedAt: string | null;
+  sentAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EmailOutboxPage {
+  items: EmailOutboxItem[];
+  total: number;
+  page: number;
+  pageSize: number;
 }

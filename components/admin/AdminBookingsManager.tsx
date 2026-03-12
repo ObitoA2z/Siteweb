@@ -24,8 +24,13 @@ export function AdminBookingsManager({ initialBookings, services }: Props) {
   const [serviceFilter, setServiceFilter] = useState<number | "">("");
   const [statusFilter, setStatusFilter] = useState<BookingStatus | "">("");
   const [queryFilter, setQueryFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(30);
+  const [total, setTotal] = useState(initialBookings.length);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
 
   const counts = useMemo(
     () => ({
@@ -39,7 +44,7 @@ export function AdminBookingsManager({ initialBookings, services }: Props) {
     [bookings],
   );
 
-  async function reload() {
+  async function reload(targetPage = page) {
     setBusy(true);
     setMessage("");
     const params = new URLSearchParams();
@@ -47,17 +52,39 @@ export function AdminBookingsManager({ initialBookings, services }: Props) {
     if (serviceFilter) params.set("serviceId", String(serviceFilter));
     if (statusFilter) params.set("status", statusFilter);
     if (queryFilter.trim()) params.set("q", queryFilter.trim());
+    params.set("page", String(targetPage));
+    params.set("pageSize", String(pageSize));
 
     const response = await fetch(`/api/admin/bookings?${params.toString()}`);
-    const data = (await response.json().catch(() => ({}))) as { error?: string } | Booking[];
+    const data = (await response.json().catch(() => ({}))) as
+      | { error?: string }
+      | Booking[]
+      | { items: Booking[]; total: number; page: number; pageSize: number };
 
-    if (!response.ok || !Array.isArray(data)) {
-      setMessage(!Array.isArray(data) ? (data.error ?? "Chargement impossible.") : "Chargement impossible.");
+    if (!response.ok) {
+      const errorData = data as { error?: string };
+      setMessage(errorData.error ?? "Chargement impossible.");
       setBusy(false);
       return;
     }
 
-    setBookings(data);
+    if (Array.isArray(data)) {
+      setBookings(data);
+      setTotal(data.length);
+      setPage(targetPage);
+      setBusy(false);
+      return;
+    }
+
+    if ("items" in data && Array.isArray(data.items)) {
+      setBookings(data.items);
+      setTotal(data.total);
+      setPage(data.page);
+      setBusy(false);
+      return;
+    }
+
+    setMessage("Chargement impossible.");
     setBusy(false);
   }
 
@@ -117,7 +144,7 @@ export function AdminBookingsManager({ initialBookings, services }: Props) {
       setBusy(false);
       return;
     }
-    await reload();
+    await reload(page);
     setMessage("Reservation annulee.");
     setBusy(false);
   }
@@ -139,7 +166,7 @@ export function AdminBookingsManager({ initialBookings, services }: Props) {
       setBusy(false);
       return;
     }
-    await reload();
+    await reload(page);
     setMessage("Reservation confirmee.");
     setBusy(false);
   }
@@ -161,7 +188,7 @@ export function AdminBookingsManager({ initialBookings, services }: Props) {
       setBusy(false);
       return;
     }
-    await reload();
+    await reload(page);
     setMessage("Demande d'annulation refusee.");
     setBusy(false);
   }
@@ -183,7 +210,7 @@ export function AdminBookingsManager({ initialBookings, services }: Props) {
       setBusy(false);
       return;
     }
-    await reload();
+    await reload(page);
     setMessage("Reservation marquee no_show.");
     setBusy(false);
   }
@@ -229,13 +256,14 @@ export function AdminBookingsManager({ initialBookings, services }: Props) {
             onChange={(event) => setQueryFilter(event.target.value)}
             placeholder="Recherche nom / email / telephone"
           />
-          <button type="button" onClick={reload} className="btn-main" disabled={busy}>
+          <button type="button" onClick={() => reload(1)} className="btn-main" disabled={busy}>
             Rechercher
           </button>
         </div>
 
         <div className="flex flex-wrap gap-2 text-xs">
-          <span className="rounded-full bg-white px-3 py-1 font-semibold">Total: {counts.total}</span>
+          <span className="rounded-full bg-white px-3 py-1 font-semibold">Page: {page}/{pageCount}</span>
+          <span className="rounded-full bg-white px-3 py-1 font-semibold">Total filtres: {total}</span>
           <span className="rounded-full bg-[#fff4e9] px-3 py-1 font-semibold">Pending: {counts.pending}</span>
           <span className="rounded-full bg-[#eaf8ff] px-3 py-1 font-semibold">Confirmed: {counts.confirmed}</span>
           <span className="rounded-full bg-[#ffeef2] px-3 py-1 font-semibold">
@@ -243,6 +271,15 @@ export function AdminBookingsManager({ initialBookings, services }: Props) {
           </span>
           <span className="rounded-full bg-[#f2f2f2] px-3 py-1 font-semibold">Cancelled: {counts.cancelled}</span>
           <span className="rounded-full bg-[#f3eefc] px-3 py-1 font-semibold">No show: {counts.noShow}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button type="button" className="btn-soft text-sm" onClick={() => reload(Math.max(1, page - 1))} disabled={busy || page <= 1}>
+            Prec.
+          </button>
+          <button type="button" className="btn-soft text-sm" onClick={() => reload(Math.min(pageCount, page + 1))} disabled={busy || page >= pageCount}>
+            Suiv.
+          </button>
         </div>
       </article>
 

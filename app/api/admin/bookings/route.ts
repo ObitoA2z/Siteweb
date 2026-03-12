@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdminApiSession, requireAdminCsrf } from "@/lib/auth";
-import { addAuditLog, cancelBooking, confirmBooking, listBookings, markBookingNoShow, rejectBookingCancellationRequest } from "@/lib/db";
+import {
+  addAuditLog,
+  cancelBooking,
+  confirmBooking,
+  listBookingsPaged,
+  markBookingNoShow,
+  rejectBookingCancellationRequest,
+} from "@/lib/db";
 import { sendBookingConfirmedEmail } from "@/lib/email";
 import { requireBodySize, requireJsonRequest, requireTrustedOrigin } from "@/lib/security";
 import { getUtcBoundsForLocalDay } from "@/lib/time";
@@ -20,6 +27,8 @@ export async function GET(request: NextRequest) {
     date: request.nextUrl.searchParams.get("date") ?? undefined,
     status: request.nextUrl.searchParams.get("status") ?? undefined,
     q: request.nextUrl.searchParams.get("q") ?? undefined,
+    page: request.nextUrl.searchParams.get("page") ?? undefined,
+    pageSize: request.nextUrl.searchParams.get("pageSize") ?? undefined,
   });
 
   if (!parsed.success) {
@@ -27,12 +36,15 @@ export async function GET(request: NextRequest) {
   }
 
   const bounds = parsed.data.date ? getUtcBoundsForLocalDay(parsed.data.date) : null;
-  const bookings = listBookings({
+  const bookings = listBookingsPaged({
     serviceId: parsed.data.serviceId,
     startUtc: bounds?.startUtc,
     endUtc: bounds?.endUtc,
     status: parsed.data.status,
     query: parsed.data.q,
+  }, {
+    page: parsed.data.page,
+    pageSize: parsed.data.pageSize,
   });
 
   return NextResponse.json(bookings);
@@ -69,22 +81,22 @@ export async function POST(request: NextRequest) {
   }
 
   if (parsed.data.action === "confirm") {
-    const booking = confirmBooking(parsed.data.bookingId);
-    if (!booking) {
+    const result = confirmBooking(parsed.data.bookingId);
+    if (!result.booking) {
       return NextResponse.json({ error: "Reservation introuvable ou deja annulee." }, { status: 404 });
     }
 
-    if (booking.customerEmail) {
+    // Idempotent: queue a "confirmed" email only when the booking changed state.
+    if (result.changed && result.booking.customerEmail) {
       await sendBookingConfirmedEmail({
-        bookingId: booking.id,
-        customerName: booking.customerName,
-        customerEmail: booking.customerEmail,
-        serviceName: booking.serviceName,
-        startAt: booking.startAt,
+        bookingId: result.booking.id,
+        customerName: result.booking.customerName,
+        customerEmail: result.booking.customerEmail,
+        serviceName: result.booking.serviceName,
+        startAt: result.booking.startAt,
       });
     }
 
-    console.log(`[booking] confirmed id=${parsed.data.bookingId}`);
     addAuditLog({
       eventType: "booking.confirm",
       actorType: "admin",
@@ -101,7 +113,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Demande d'annulation introuvable." }, { status: 404 });
     }
 
-    console.log(`[booking] cancel request rejected id=${parsed.data.bookingId}`);
     addAuditLog({
       eventType: "booking.cancel_request.reject",
       actorType: "admin",
@@ -133,7 +144,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Reservation introuvable." }, { status: 404 });
   }
 
-  console.log(`[booking] cancelled id=${parsed.data.bookingId}`);
   addAuditLog({
     eventType: "booking.cancel",
     actorType: "admin",

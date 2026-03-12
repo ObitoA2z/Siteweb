@@ -7,6 +7,20 @@ import { getUtcBoundsForLocalDay, todayInParis } from "@/lib/time";
 
 export default async function BookingPage() {
   const services = listServices();
+  if (services.length === 0) {
+    return (
+      <div className="shell">
+        <div className="card space-y-3 p-6">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8a6578]">Reservation</p>
+          <h1 className="text-3xl font-bold">Aucune prestation disponible</h1>
+          <p className="text-[#5f4754]">
+            Les prestations ne sont pas encore configurees. Merci de revenir plus tard ou de nous contacter.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const session = await getServerSession(customerAuthOptions);
   const initialDate = todayInParis();
   const firstServiceId = services[0]?.id;

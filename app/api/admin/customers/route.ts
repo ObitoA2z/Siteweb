@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdminApiSession, requireAdminCsrf } from "@/lib/auth";
-import { addAuditLog, listCustomerAccounts, updateCustomerAccountMeta } from "@/lib/db";
+import { addAuditLog, listCustomerAccountsPaged, updateCustomerAccountMeta } from "@/lib/db";
 import { requireBodySize, requireJsonRequest, requireTrustedOrigin } from "@/lib/security";
 import { adminCustomerListQuerySchema, customerMetaUpdateSchema } from "@/lib/validation";
 
@@ -16,14 +16,19 @@ export async function GET(request: NextRequest) {
   const parsed = adminCustomerListQuerySchema.safeParse({
     q: request.nextUrl.searchParams.get("q") ?? undefined,
     provider: request.nextUrl.searchParams.get("provider") ?? undefined,
+    page: request.nextUrl.searchParams.get("page") ?? undefined,
+    pageSize: request.nextUrl.searchParams.get("pageSize") ?? undefined,
   });
   if (!parsed.success) {
     return NextResponse.json({ error: "Parametres invalides.", issues: parsed.error.flatten() }, { status: 400 });
   }
 
-  const accounts = listCustomerAccounts({
+  const accounts = listCustomerAccountsPaged({
     query: parsed.data.q,
     provider: parsed.data.provider,
+  }, {
+    page: parsed.data.page,
+    pageSize: parsed.data.pageSize,
   });
   return NextResponse.json(accounts);
 }

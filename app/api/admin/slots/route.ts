@@ -12,6 +12,7 @@ import {
   listSlots,
   updateSlotStatus,
 } from "@/lib/db";
+import { reportServerError } from "@/lib/monitoring";
 import { requireBodySize, requireJsonRequest, requireTrustedOrigin } from "@/lib/security";
 import { addDays, getUtcBoundsForLocalDay, getWeekday, minutesToTimeString, parseTimeToMinutes, zonedLocalToUtcIso } from "@/lib/time";
 import {
@@ -259,7 +260,9 @@ export async function POST(request: NextRequest) {
     if (isUniqueConstraintError(error)) {
       return NextResponse.json({ error: "Ce creneau existe deja." }, { status: 409 });
     }
-    console.error("[admin/slots] create failed", error);
+    await reportServerError("admin_slot_create_failed", error, {
+      actor: guard.session?.username ?? "unknown",
+    });
     return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
   }
 }

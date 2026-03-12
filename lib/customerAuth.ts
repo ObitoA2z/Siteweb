@@ -3,6 +3,11 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "@/lib/env";
+import {
+  clearCustomerLoginFailures,
+  getCustomerLoginLockSeconds,
+  registerCustomerLoginFailure,
+} from "@/lib/customerLoginLock";
 import { upsertGoogleCustomerUser, verifyCustomerCredentials } from "@/lib/db";
 import { customerLoginSchema } from "@/lib/validation";
 
@@ -15,16 +20,44 @@ const providers: NextAuthOptions["providers"] = [
       email: { label: "Email", type: "email" },
       password: { label: "Mot de passe", type: "password" },
     },
-    async authorize(rawCredentials) {
+    async authorize(rawCredentials, req) {
       const parsed = customerLoginSchema.safeParse(rawCredentials);
       if (!parsed.success) {
         return null;
       }
 
-      const user = verifyCustomerCredentials(parsed.data.email, parsed.data.password);
-      if (!user) {
+      // Clé "ip:email" pour éviter qu'un attaquant verrouille le compte d'un autre
+      // utilisateur depuis une IP différente (DoS ciblé).
+      // Clé "ip" seule utilisée en complément dans l'API route pour le password-spraying.
+      const reqHeaders = (req as { headers?: Record<string, string> })?.headers ?? {};
+      const cfIp = reqHeaders["cf-connecting-ip"];
+      const forwardedFor = reqHeaders["x-forwarded-for"];
+      const ip =
+        (cfIp && cfIp.trim()) ||
+        (forwardedFor ? forwardedFor.split(",")[0]?.trim() : null) ||
+        "unknown";
+
+      const lockKeyIpEmail = `${ip}:${parsed.data.email}`;
+      const lockKeyIp = ip;
+
+      const lockSeconds =
+        Math.max(
+          getCustomerLoginLockSeconds(lockKeyIpEmail),
+          getCustomerLoginLockSeconds(lockKeyIp),
+        );
+      if (lockSeconds > 0) {
         return null;
       }
+
+      const user = verifyCustomerCredentials(parsed.data.email, parsed.data.password);
+      if (!user) {
+        registerCustomerLoginFailure(lockKeyIpEmail);
+        registerCustomerLoginFailure(lockKeyIp);
+        return null;
+      }
+
+      clearCustomerLoginFailures(lockKeyIpEmail);
+      clearCustomerLoginFailures(lockKeyIp);
 
       return {
         id: String(user.id),

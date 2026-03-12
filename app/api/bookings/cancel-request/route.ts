@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
 import { customerAuthOptions } from "@/lib/customerAuth";
-import { addAuditLog, requestBookingCancellationByCustomer } from "@/lib/db";
+import { addAuditLog, getCustomerUserByEmail, requestBookingCancellationByCustomer } from "@/lib/db";
+import { logInfo } from "@/lib/logger";
 import { maskEmail } from "@/lib/privacy";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp, requireBodySize, requireJsonRequest, requireTrustedOrigin } from "@/lib/security";
@@ -30,8 +31,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const customerUser = getCustomerUserByEmail(customerEmail);
+  if (customerUser && !customerUser.emailVerifiedAt) {
+    return NextResponse.json(
+      { error: "Adresse email non verifiee. Verifie ton email avant de modifier une reservation." },
+      { status: 403 },
+    );
+  }
+
   const ip = getClientIp(request);
-  const rate = checkRateLimit(`cancel-request:${ip}:${customerEmail.toLowerCase()}`, 10, 10 * 60_000);
+  const rate = await checkRateLimit(`cancel-request:${ip}:${customerEmail.toLowerCase()}`, 10, 10 * 60_000);
   if (!rate.ok) {
     return NextResponse.json({ error: "Trop de demandes. Reessaie plus tard." }, { status: 429 });
   }
@@ -59,7 +68,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Action impossible." }, { status: 400 });
   }
 
-  console.log(`[booking] cancel request from customer bookingId=${result.booking.id}`);
+  logInfo("booking_cancel_request_created", { bookingId: result.booking.id });
   addAuditLog({
     eventType: "booking.cancel_request.create",
     actorType: "customer",

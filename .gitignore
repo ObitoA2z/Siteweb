@@ -30,9 +30,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-.env.example
+# env files — .env.example est commitable, .env ne l'est JAMAIS
+.env
+.env.local
+.env.*.local
 
 # vercel
 .vercel
@@ -50,3 +51,9 @@ cloudflared.exe
 .cloudflared.log
 next-start.out.log
 next-start.err.log
+site-output.log
+tunnel-output.log
+
+# playwright artifacts
+test-results/
+playwright-report/

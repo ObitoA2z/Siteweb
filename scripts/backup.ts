@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import "./load-env";
 import { getDb } from "../lib/db";
 import { env } from "../lib/env";
 

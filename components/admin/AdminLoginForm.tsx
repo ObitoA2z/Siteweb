@@ -7,29 +7,38 @@ export function AdminLoginForm() {
   const router = useRouter();
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (loading) {
+      return;
+    }
     setLoading(true);
     setError("");
 
-    const response = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, otp: otp.trim() || undefined }),
+      });
 
-    const data = (await response.json().catch(() => ({}))) as { error?: string };
-    if (!response.ok) {
-      setError(data.error ?? "Connexion impossible.");
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) {
+        setError(data.error ?? "Connexion impossible.");
+        return;
+      }
+
+      router.replace("/admin/dashboard");
+      router.refresh();
+    } catch {
+      setError("Erreur reseau. Reessaie dans quelques secondes.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.replace("/admin/dashboard");
-    router.refresh();
   }
 
   return (
@@ -56,6 +65,21 @@ export function AdminLoginForm() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="otp" className="block text-sm font-semibold">
+          Code 2FA (si active)
+        </label>
+        <input
+          id="otp"
+          inputMode="numeric"
+          pattern="[0-9]{6}"
+          maxLength={6}
+          value={otp}
+          onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
+          placeholder="123456"
         />
       </div>
 

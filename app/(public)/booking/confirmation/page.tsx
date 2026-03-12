@@ -15,7 +15,8 @@ export default async function BookingConfirmationPage({ searchParams }: Props) {
         <h1 className="text-4xl font-bold">Demande en attente</h1>
         <p className="text-[#5f4754]">
           Merci pour ta confiance. Ta demande de reservation est en attente de validation par l&apos;admin.
-          Un email de confirmation te sera envoye apres validation.
+          Un email de confirmation de reception t&apos;a ete envoye.
+          Un second email te sera envoye apres validation.
           {bookingId ? <span className="block">Numero de reservation: #{bookingId}</span> : null}
         </p>
         <div className="flex flex-wrap justify-center gap-3 pt-2">

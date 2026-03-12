@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { createHash, randomBytes } from "node:crypto";
 
 import bcrypt from "bcryptjs";
 import Database from "better-sqlite3";
@@ -72,6 +73,13 @@ export function getDb(): DbInstance {
   if (!globalThis.__lashDb) {
     globalThis.__lashDb = createDb();
   }
+  if (!globalThis.__lashDbReady) {
+    // Marquer comme prêt AVANT les appels pour éviter la récursion infinie
+    // (runPendingMigrations / bootstrapAdminUser rappellent getDb elles-mêmes)
+    globalThis.__lashDbReady = true;
+    runPendingMigrations();
+    bootstrapAdminUser();
+  }
   return globalThis.__lashDb;
 }
 
@@ -100,52 +108,32 @@ export function runPendingMigrations() {
   const db = getDb();
   ensureMigrationsTable(db);
 
-  const applied = new Set<string>(
-    db
-      .prepare(`SELECT filename FROM ${MIGRATION_TABLE}`)
-      .all()
-      .map((row) => (row as { filename: string }).filename),
-  );
+  const applyMigration = db.transaction((filename: string, sql: string) => {
+    const alreadyApplied = db
+      .prepare(`SELECT 1 FROM ${MIGRATION_TABLE} WHERE filename = ? LIMIT 1`)
+      .get(filename);
 
-  for (const filename of getMigrationFiles()) {
-    if (applied.has(filename)) {
-      continue;
+    if (alreadyApplied) {
+      return;
     }
 
+    db.exec(sql);
+    db.prepare(`INSERT INTO ${MIGRATION_TABLE} (filename) VALUES (?)`).run(filename);
+  });
+
+  for (const filename of getMigrationFiles()) {
     const migrationPath = path.join(process.cwd(), "migrations", filename);
     const sql = fs.readFileSync(migrationPath, "utf-8");
-
-    const apply = db.transaction(() => {
-      db.exec(sql);
-      db.prepare(`INSERT INTO ${MIGRATION_TABLE} (filename) VALUES (?)`).run(filename);
-    });
-
-    apply();
+    applyMigration.immediate(filename, sql);
   }
 }
 
 export function bootstrapAdminUser() {
   const db = getDb();
-  const existing = db.prepare("SELECT id FROM admin_users LIMIT 1").get() as { id: number } | undefined;
-  if (existing) {
-    return;
-  }
-
   const passwordHash = bcrypt.hashSync(env.ADMIN_PASSWORD, 12);
-  db.prepare("INSERT INTO admin_users (username, password_hash) VALUES (?, ?)")
+  db.prepare("INSERT OR IGNORE INTO admin_users (username, password_hash) VALUES (?, ?)")
     .run(env.ADMIN_USERNAME, passwordHash);
 }
-
-function initializeDatabase() {
-  if (globalThis.__lashDbReady) {
-    return;
-  }
-  runPendingMigrations();
-  bootstrapAdminUser();
-  globalThis.__lashDbReady = true;
-}
-
-initializeDatabase();
 
 function mapService(row: {
   id: number;
@@ -223,6 +211,7 @@ function mapCustomerUser(row: {
   phone: string | null;
   passwordHash: string | null;
   googleId: string | null;
+  emailVerifiedAt: string | null;
   createdAt: string;
 }): CustomerUser {
   return {
@@ -232,12 +221,21 @@ function mapCustomerUser(row: {
     phone: row.phone,
     passwordHash: row.passwordHash,
     googleId: row.googleId,
+    emailVerifiedAt: row.emailVerifiedAt,
     createdAt: row.createdAt,
   };
 }
 
 function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
+}
+
+function generateSecureToken(bytes = 32): string {
+  return randomBytes(bytes).toString("hex");
+}
+
+function hashToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
 }
 
 export function addAuditLog(input: {
@@ -296,6 +294,61 @@ export function listAuditLogs(filters: { eventType?: string; startUtc?: string; 
     .all(...values) as AuditLogItem[];
 
   return rows;
+}
+
+export function listAuditLogsPaged(
+  filters: { eventType?: string; startUtc?: string; endUtc?: string } = {},
+  pagination: { page?: number; pageSize?: number } = {},
+): { items: AuditLogItem[]; total: number; page: number; pageSize: number } {
+  const db = getDb();
+  const clauses: string[] = [];
+  const values: Array<string> = [];
+
+  if (filters.eventType) {
+    clauses.push("event_type = ?");
+    values.push(filters.eventType);
+  }
+  if (filters.startUtc) {
+    clauses.push("created_at >= ?");
+    values.push(filters.startUtc.slice(0, 19).replace("T", " "));
+  }
+  if (filters.endUtc) {
+    clauses.push("created_at < ?");
+    values.push(filters.endUtc.slice(0, 19).replace("T", " "));
+  }
+
+  const where = clauses.length > 0 ? `WHERE ${clauses.join(" AND ")}` : "";
+  const pageSize = Math.min(100, Math.max(1, pagination.pageSize ?? 30));
+  const page = Math.max(1, pagination.page ?? 1);
+  const offset = (page - 1) * pageSize;
+
+  const items = db
+    .prepare(
+      `
+      SELECT
+        id,
+        event_type AS eventType,
+        actor_type AS actorType,
+        actor_id AS actorId,
+        message,
+        meta_json AS metaJson,
+        strftime('%Y-%m-%dT%H:%M:%SZ', created_at) AS createdAt
+      FROM audit_log
+      ${where}
+      ORDER BY created_at DESC
+      LIMIT ?
+      OFFSET ?
+      `,
+    )
+    .all(...values, pageSize, offset) as AuditLogItem[];
+
+  const total = (
+    db
+      .prepare(`SELECT COUNT(*) AS count FROM audit_log ${where}`)
+      .get(...values) as { count: number }
+  ).count;
+
+  return { items, total, page, pageSize };
 }
 
 export function getBusinessSettings(): BusinessSettings {
@@ -648,6 +701,7 @@ export function getCustomerUserById(id: number): CustomerUser | null {
         phone,
         password_hash AS passwordHash,
         google_id AS googleId,
+        email_verified_at AS emailVerifiedAt,
         created_at AS createdAt
       FROM customer_users
       WHERE id = ?
@@ -661,6 +715,7 @@ export function getCustomerUserById(id: number): CustomerUser | null {
         phone: string | null;
         passwordHash: string | null;
         googleId: string | null;
+        emailVerifiedAt: string | null;
         createdAt: string;
       }
     | undefined;
@@ -680,6 +735,7 @@ export function getCustomerUserByEmail(email: string): CustomerUser | null {
         phone,
         password_hash AS passwordHash,
         google_id AS googleId,
+        email_verified_at AS emailVerifiedAt,
         created_at AS createdAt
       FROM customer_users
       WHERE email = ?
@@ -693,6 +749,7 @@ export function getCustomerUserByEmail(email: string): CustomerUser | null {
         phone: string | null;
         passwordHash: string | null;
         googleId: string | null;
+        emailVerifiedAt: string | null;
         createdAt: string;
       }
     | undefined;
@@ -707,22 +764,203 @@ export function createCustomerUser(input: {
   phone?: string | null;
 }): CustomerUser | null {
   const email = normalizeEmail(input.email);
-  if (getCustomerUserByEmail(email)) {
-    return null;
-  }
-
   const db = getDb();
+  // Hachage du mot de passe en dehors de la transaction (opération coûteuse)
   const passwordHash = bcrypt.hashSync(input.password, 12);
+
+  // INSERT OR IGNORE est atomique : si l'email existe déjà (UNIQUE constraint),
+  // la ligne est ignorée sans erreur et lastInsertRowid vaut 0.
+  // Cela élimine la race condition du check-then-insert.
   const result = db
     .prepare(
       `
-      INSERT INTO customer_users (name, email, phone, password_hash)
+      INSERT OR IGNORE INTO customer_users (name, email, phone, password_hash)
       VALUES (?, ?, ?, ?)
       `,
     )
     .run(input.name.trim(), email, input.phone?.trim() || null, passwordHash);
 
+  // lastInsertRowid = 0 signifie que l'INSERT a été ignoré (email déjà pris)
+  if (result.lastInsertRowid === 0 || result.changes === 0) {
+    return null;
+  }
+
   return getCustomerUserById(Number(result.lastInsertRowid));
+}
+
+export function isCustomerEmailVerified(email: string): boolean {
+  const db = getDb();
+  const row = db
+    .prepare(
+      `
+      SELECT email_verified_at AS emailVerifiedAt
+      FROM customer_users
+      WHERE lower(email) = lower(?)
+      LIMIT 1
+      `,
+    )
+    .get(normalizeEmail(email)) as { emailVerifiedAt: string | null } | undefined;
+
+  return Boolean(row?.emailVerifiedAt);
+}
+
+export function createPasswordResetToken(email: string): {
+  token: string;
+  expiresAt: string;
+  customerName: string;
+  customerEmail: string;
+} | null {
+  const user = getCustomerUserByEmail(email);
+  if (!user) {
+    return null;
+  }
+
+  const db = getDb();
+  const token = generateSecureToken(32);
+  const tokenHash = hashToken(token);
+  const ttlMinutes = Math.max(5, Math.min(120, env.PASSWORD_RESET_TOKEN_TTL_MINUTES));
+
+  db.prepare(
+    `
+    INSERT INTO password_reset_tokens (email, token_hash, expires_at)
+    VALUES (?, ?, datetime('now', ?))
+    `,
+  ).run(user.email, tokenHash, `+${ttlMinutes} minutes`);
+
+  const row = db
+    .prepare("SELECT expires_at AS expiresAt FROM password_reset_tokens WHERE token_hash = ? LIMIT 1")
+    .get(tokenHash) as { expiresAt: string } | undefined;
+
+  if (!row) {
+    return null;
+  }
+
+  return {
+    token,
+    expiresAt: row.expiresAt,
+    customerName: user.name,
+    customerEmail: user.email,
+  };
+}
+
+export function consumePasswordResetToken(token: string): { email: string } | null {
+  const db = getDb();
+  const tokenHash = hashToken(token.trim());
+
+  const tx = db.transaction((hash: string) => {
+    const row = db
+      .prepare(
+        `
+        SELECT id, email
+        FROM password_reset_tokens
+        WHERE token_hash = ?
+          AND used_at IS NULL
+          AND datetime(expires_at) > datetime('now')
+        LIMIT 1
+        `,
+      )
+      .get(hash) as { id: number; email: string } | undefined;
+
+    if (!row) {
+      return null;
+    }
+
+    db.prepare("UPDATE password_reset_tokens SET used_at = datetime('now') WHERE id = ?").run(row.id);
+    return { email: row.email };
+  });
+
+  return tx(tokenHash);
+}
+
+export function updateCustomerPasswordByEmail(email: string, password: string): boolean {
+  const db = getDb();
+  const passwordHash = bcrypt.hashSync(password, 12);
+  const updated = db
+    .prepare(
+      `
+      UPDATE customer_users
+      SET
+        password_hash = ?,
+        email_verified_at = coalesce(email_verified_at, datetime('now'))
+      WHERE lower(email) = lower(?)
+      `,
+    )
+    .run(passwordHash, normalizeEmail(email));
+
+  return updated.changes > 0;
+}
+
+export function createEmailVerificationToken(email: string): {
+  token: string;
+  expiresAt: string;
+  customerName: string;
+  customerEmail: string;
+} | null {
+  const user = getCustomerUserByEmail(email);
+  if (!user) {
+    return null;
+  }
+
+  if (user.emailVerifiedAt) {
+    return null;
+  }
+
+  const db = getDb();
+  const token = generateSecureToken(32);
+  const tokenHash = hashToken(token);
+  const ttlMinutes = 24 * 60;
+
+  db.prepare(
+    `
+    INSERT INTO email_verification_tokens (email, token_hash, expires_at)
+    VALUES (?, ?, datetime('now', ?))
+    `,
+  ).run(user.email, tokenHash, `+${ttlMinutes} minutes`);
+
+  const row = db
+    .prepare("SELECT expires_at AS expiresAt FROM email_verification_tokens WHERE token_hash = ? LIMIT 1")
+    .get(tokenHash) as { expiresAt: string } | undefined;
+
+  if (!row) {
+    return null;
+  }
+
+  return {
+    token,
+    expiresAt: row.expiresAt,
+    customerName: user.name,
+    customerEmail: user.email,
+  };
+}
+
+export function verifyCustomerEmailByToken(token: string): { email: string } | null {
+  const db = getDb();
+  const tokenHash = hashToken(token.trim());
+
+  const tx = db.transaction((hash: string) => {
+    const row = db
+      .prepare(
+        `
+        SELECT id, email
+        FROM email_verification_tokens
+        WHERE token_hash = ?
+          AND used_at IS NULL
+          AND datetime(expires_at) > datetime('now')
+        LIMIT 1
+        `,
+      )
+      .get(hash) as { id: number; email: string } | undefined;
+
+    if (!row) {
+      return null;
+    }
+
+    db.prepare("UPDATE email_verification_tokens SET used_at = datetime('now') WHERE id = ?").run(row.id);
+    db.prepare("UPDATE customer_users SET email_verified_at = datetime('now') WHERE lower(email) = lower(?)").run(row.email);
+    return { email: row.email };
+  });
+
+  return tx(tokenHash);
 }
 
 export function verifyCustomerCredentials(email: string, password: string): CustomerUser | null {
@@ -774,7 +1012,7 @@ export function upsertGoogleCustomerUser(input: {
       : undefined;
 
   if (byGoogleId) {
-    db.prepare("UPDATE customer_users SET email = ?, name = ? WHERE id = ?").run(
+    db.prepare("UPDATE customer_users SET email = ?, name = ?, email_verified_at = coalesce(email_verified_at, datetime('now')) WHERE id = ?").run(
       normalizedEmail,
       input.name?.trim() || byGoogleId.name,
       byGoogleId.id,
@@ -789,7 +1027,8 @@ export function upsertGoogleCustomerUser(input: {
       UPDATE customer_users
       SET
         name = ?,
-        google_id = COALESCE(?, google_id)
+        google_id = COALESCE(?, google_id),
+        email_verified_at = coalesce(email_verified_at, datetime('now'))
       WHERE id = ?
       `,
     ).run(input.name?.trim() || byEmail.name, input.googleId?.trim() || null, byEmail.id);
@@ -800,8 +1039,8 @@ export function upsertGoogleCustomerUser(input: {
   const result = db
     .prepare(
       `
-      INSERT INTO customer_users (name, email, google_id)
-      VALUES (?, ?, ?)
+      INSERT INTO customer_users (name, email, google_id, email_verified_at)
+      VALUES (?, ?, ?, datetime('now'))
       `,
     )
     .run(input.name?.trim() || "Cliente", normalizedEmail, input.googleId?.trim() || null);
@@ -1396,6 +1635,90 @@ export function listBookings(filters: {
   return rows;
 }
 
+export function listBookingsPaged(
+  filters: {
+    serviceId?: number;
+    startUtc?: string;
+    endUtc?: string;
+    status?: BookingStatus;
+    query?: string;
+  } = {},
+  pagination: { page?: number; pageSize?: number } = {},
+): { items: Booking[]; total: number; page: number; pageSize: number } {
+  const db = getDb();
+  const clauses: string[] = [];
+  const values: Array<number | string> = [];
+
+  if (filters.serviceId) {
+    clauses.push("s.service_id = ?");
+    values.push(filters.serviceId);
+  }
+  if (filters.startUtc) {
+    clauses.push("s.start_at >= ?");
+    values.push(filters.startUtc);
+  }
+  if (filters.endUtc) {
+    clauses.push("s.start_at < ?");
+    values.push(filters.endUtc);
+  }
+  if (filters.status) {
+    clauses.push("b.status = ?");
+    values.push(filters.status);
+  }
+  if (filters.query && filters.query.trim()) {
+    clauses.push("(lower(b.customer_name) LIKE ? OR lower(coalesce(b.customer_email, '')) LIKE ? OR lower(b.customer_phone) LIKE ?)");
+    const q = `%${filters.query.trim().toLowerCase()}%`;
+    values.push(q, q, q);
+  }
+
+  const where = clauses.length > 0 ? `WHERE ${clauses.join(" AND ")}` : "";
+  const pageSize = Math.min(100, Math.max(1, pagination.pageSize ?? 30));
+  const page = Math.max(1, pagination.page ?? 1);
+  const offset = (page - 1) * pageSize;
+
+  const items = db
+    .prepare(
+      `
+      SELECT
+        b.id AS id,
+        b.slot_id AS slotId,
+        b.customer_name AS customerName,
+        b.customer_phone AS customerPhone,
+        b.customer_email AS customerEmail,
+        b.notes AS notes,
+        b.status AS status,
+        b.created_at AS createdAt,
+        s.start_at AS startAt,
+        s.end_at AS endAt,
+        s.service_id AS serviceId,
+        sv.name AS serviceName
+      FROM bookings b
+      INNER JOIN slots s ON s.id = b.slot_id
+      INNER JOIN services sv ON sv.id = s.service_id
+      ${where}
+      ORDER BY s.start_at DESC
+      LIMIT ?
+      OFFSET ?
+      `,
+    )
+    .all(...values, pageSize, offset) as Booking[];
+
+  const total = (
+    db
+      .prepare(
+        `
+        SELECT COUNT(*) AS count
+        FROM bookings b
+        INNER JOIN slots s ON s.id = b.slot_id
+        ${where}
+        `,
+      )
+      .get(...values) as { count: number }
+  ).count;
+
+  return { items, total, page, pageSize };
+}
+
 export function listBookingsByCustomerEmail(email: string): Booking[] {
   const db = getDb();
   const normalizedEmail = normalizeEmail(email);
@@ -1538,6 +1861,130 @@ export function listCustomerAccounts(filters: {
   });
 }
 
+export function listCustomerAccountsPaged(
+  filters: {
+    query?: string;
+    provider?: "email" | "google" | "email+google";
+  } = {},
+  pagination: { page?: number; pageSize?: number } = {},
+): { items: CustomerAccountSummary[]; total: number; page: number; pageSize: number } {
+  const db = getDb();
+  const clauses: string[] = [];
+  const values: string[] = [];
+
+  if (filters.query && filters.query.trim()) {
+    const q = `%${filters.query.trim().toLowerCase()}%`;
+    clauses.push("(lower(cu.name) LIKE ? OR lower(cu.email) LIKE ? OR lower(coalesce(cu.phone, '')) LIKE ?)");
+    values.push(q, q, q);
+  }
+
+  if (filters.provider === "email") {
+    clauses.push("cu.password_hash IS NOT NULL AND cu.google_id IS NULL");
+  } else if (filters.provider === "google") {
+    clauses.push("cu.password_hash IS NULL AND cu.google_id IS NOT NULL");
+  } else if (filters.provider === "email+google") {
+    clauses.push("cu.password_hash IS NOT NULL AND cu.google_id IS NOT NULL");
+  }
+
+  const where = clauses.length > 0 ? `WHERE ${clauses.join(" AND ")}` : "";
+  const pageSize = Math.min(100, Math.max(1, pagination.pageSize ?? 30));
+  const page = Math.max(1, pagination.page ?? 1);
+  const offset = (page - 1) * pageSize;
+
+  const rows = db
+    .prepare(
+      `
+      SELECT
+        cu.id AS id,
+        cu.name AS name,
+        cu.email AS email,
+        cu.phone AS phone,
+        cu.internal_notes AS internalNotes,
+        cu.is_vip AS isVip,
+        cu.is_blacklisted AS isBlacklisted,
+        cu.cancelled_count AS cancelledCount,
+        CASE WHEN cu.password_hash IS NOT NULL THEN 1 ELSE 0 END AS hasPassword,
+        CASE WHEN cu.google_id IS NOT NULL THEN 1 ELSE 0 END AS hasGoogle,
+        strftime('%Y-%m-%dT%H:%M:%SZ', cu.created_at) AS createdAt,
+        (
+          SELECT COUNT(*)
+          FROM bookings b
+          WHERE lower(coalesce(b.customer_email, '')) = lower(cu.email)
+        ) AS bookingCount,
+        (
+          SELECT s.start_at
+          FROM bookings b
+          INNER JOIN slots s ON s.id = b.slot_id
+          WHERE lower(coalesce(b.customer_email, '')) = lower(cu.email)
+          ORDER BY s.start_at DESC
+          LIMIT 1
+        ) AS lastBookingAt,
+        (
+          SELECT b.status
+          FROM bookings b
+          INNER JOIN slots s ON s.id = b.slot_id
+          WHERE lower(coalesce(b.customer_email, '')) = lower(cu.email)
+          ORDER BY s.start_at DESC
+          LIMIT 1
+        ) AS lastBookingStatus
+      FROM customer_users cu
+      ${where}
+      ORDER BY cu.created_at DESC
+      LIMIT ?
+      OFFSET ?
+      `,
+    )
+    .all(...values, pageSize, offset) as {
+    id: number;
+    name: string;
+    email: string;
+    phone: string | null;
+    internalNotes: string | null;
+    isVip: number;
+    isBlacklisted: number;
+    cancelledCount: number;
+    hasPassword: number;
+    hasGoogle: number;
+    createdAt: string;
+    bookingCount: number;
+    lastBookingAt: string | null;
+    lastBookingStatus: BookingStatus | null;
+  }[];
+
+  const total = (
+    db
+      .prepare(`SELECT COUNT(*) AS count FROM customer_users cu ${where}`)
+      .get(...values) as { count: number }
+  ).count;
+
+  const items = rows.map((row) => {
+    let authProvider: CustomerAccountSummary["authProvider"] = "email";
+    if (row.hasGoogle === 1 && row.hasPassword === 1) {
+      authProvider = "email+google";
+    } else if (row.hasGoogle === 1) {
+      authProvider = "google";
+    }
+
+    return {
+      id: row.id,
+      name: row.name,
+      email: row.email,
+      phone: row.phone,
+      internalNotes: row.internalNotes,
+      isVip: row.isVip === 1,
+      isBlacklisted: row.isBlacklisted === 1,
+      cancelledCount: row.cancelledCount,
+      authProvider,
+      createdAt: row.createdAt,
+      bookingCount: row.bookingCount,
+      lastBookingAt: row.lastBookingAt,
+      lastBookingStatus: row.lastBookingStatus,
+    };
+  });
+
+  return { items, total, page, pageSize };
+}
+
 export function updateCustomerAccountMeta(input: {
   id: number;
   isVip: boolean;
@@ -1640,7 +2087,7 @@ export function getBookingById(bookingId: number): Booking | null {
   return row ?? null;
 }
 
-export function confirmBooking(bookingId: number): Booking | null {
+export function confirmBooking(bookingId: number): { booking: Booking | null; changed: boolean } {
   const db = getDb();
 
   const tx = db.transaction((id: number) => {
@@ -1649,18 +2096,20 @@ export function confirmBooking(bookingId: number): Booking | null {
       .get(id) as { id: number; status: BookingStatus } | undefined;
 
     if (!booking) {
-      return null;
+      return { booking: null, changed: false };
     }
 
     if (booking.status === "cancelled") {
-      return null;
+      return { booking: null, changed: false };
     }
 
+    let changed = false;
     if (booking.status !== "confirmed") {
       db.prepare("UPDATE bookings SET status = 'confirmed' WHERE id = ?").run(id);
+      changed = true;
     }
 
-    return getBookingById(id);
+    return { booking: getBookingById(id), changed };
   });
 
   return tx(bookingId);

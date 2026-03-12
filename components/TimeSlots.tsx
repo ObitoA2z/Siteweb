@@ -20,7 +20,8 @@ export function TimeSlots({ slots, selectedSlotId, onSelect }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+    /* 3 colonnes sur mobile, 4 sur sm+ pour des boutons plus grands au doigt */
+    <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
       {slots.map((slot) => {
         const active = selectedSlotId === slot.slotId;
         return (
@@ -28,7 +29,7 @@ export function TimeSlots({ slots, selectedSlotId, onSelect }: Props) {
             key={slot.slotId}
             type="button"
             onClick={() => onSelect(slot.slotId)}
-            className={`rounded-xl border px-3 py-2 text-sm font-semibold transition ${
+            className={`rounded-xl border px-2 py-3 text-sm font-semibold transition min-h-[48px] touch-action-manipulation ${
               active
                 ? "border-[#2d1e27] bg-[#2d1e27] text-white"
                 : "border-[#2d1e2733] bg-white/80 text-[#2d1e27] hover:border-[#2d1e27]"

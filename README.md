@@ -57,7 +57,9 @@ NEXT_PUBLIC_APP_TIMEZONE=Europe/Paris
 npm run migrate
 npm run seed
 npm run backup
+npm run emails:worker
 npm run dev
+npm run test:e2e
 ```
 
 Production:
@@ -74,6 +76,10 @@ npm run start
 - `POST /api/bookings`
 - `POST /api/bookings/cancel-request` (cliente connectee)
 - `POST /api/auth/register`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
+- `POST /api/auth/verify-email`
+- `POST /api/auth/verify-email/request`
 - `GET/POST /api/auth/*` (NextAuth: credentials + Google OAuth)
 
 ## API admin (session requise)
@@ -210,6 +216,14 @@ npm run backup
 
 - Destination: `data/backups/`
 - Retention: 30 derniers backups
+
+## Operations Runbook
+
+Voir [docs/OPERATIONS.md](docs/OPERATIONS.md) pour:
+- backup / restore
+- outbox email recovery
+- log rotation
+- incident response
 
 ### Restauration rapide
 

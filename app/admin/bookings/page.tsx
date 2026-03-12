@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminBookingsManager } from "@/components/admin/AdminBookingsManager";
 import { getAdminSession } from "@/lib/auth";
-import { listBookings, listServices } from "@/lib/db";
+import { listBookingsPaged, listServices } from "@/lib/db";
 
 export default async function AdminBookingsPage() {
   const session = await getAdminSession();
@@ -12,7 +12,7 @@ export default async function AdminBookingsPage() {
   }
 
   const services = listServices({ includeInactive: true });
-  const bookings = listBookings();
+  const bookings = listBookingsPaged({}, { page: 1, pageSize: 30 });
 
   return (
     <div className="space-y-6">
@@ -22,7 +22,7 @@ export default async function AdminBookingsPage() {
       </div>
 
       <AdminNav />
-      <AdminBookingsManager initialBookings={bookings} services={services} />
+      <AdminBookingsManager initialBookings={bookings.items} services={services} />
     </div>
   );
 }

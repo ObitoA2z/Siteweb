@@ -37,6 +37,7 @@ const strongPassword = z
 export const adminLoginSchema = z.object({
   username: z.string().trim().min(1).max(80),
   password: z.string().min(1).max(200),
+  otp: z.string().trim().regex(/^\d{6}$/).optional(),
 }).strict();
 
 export const serviceCreateSchema = z.object({
@@ -120,16 +121,33 @@ export const bookingListQuerySchema = z.object({
   date: isoDateString.optional(),
   status: bookingStatus.optional(),
   q: z.string().trim().max(120).optional(),
+  page: z.coerce.number().int().min(1).optional(),
+  pageSize: z.coerce.number().int().min(1).max(100).optional(),
 }).strict();
 
 export const adminCustomerListQuerySchema = z.object({
   q: z.string().trim().max(120).optional(),
   provider: z.enum(["email", "google", "email+google"]).optional(),
+  page: z.coerce.number().int().min(1).optional(),
+  pageSize: z.coerce.number().int().min(1).max(100).optional(),
 }).strict();
 
 export const auditListQuerySchema = z.object({
   eventType: z.string().trim().max(80).optional(),
   date: isoDateString.optional(),
+  page: z.coerce.number().int().min(1).optional(),
+  pageSize: z.coerce.number().int().min(1).max(100).optional(),
+}).strict();
+
+export const emailOutboxListQuerySchema = z.object({
+  status: z.enum(["pending", "retry", "sending", "sent", "failed"]).optional(),
+  page: z.coerce.number().int().min(1).optional(),
+  pageSize: z.coerce.number().int().min(1).max(100).optional(),
+}).strict();
+
+export const emailOutboxActionSchema = z.object({
+  action: z.literal("retry"),
+  id: z.number().int().positive(),
 }).strict();
 
 export const planningSettingsUpdateSchema = z
@@ -205,11 +223,26 @@ export const customerRegisterSchema = z.object({
   email: normalizedEmail,
   phone: z.union([normalizedPhone, z.literal("")]).optional(),
   password: strongPassword,
+  website: z.string().optional().default(""),
+  formStartedAt: z.number().int().positive().optional(),
 }).strict();
 
 export const customerLoginSchema = z.object({
   email: normalizedEmail,
   password: z.string().min(1).max(128),
+}).strict();
+
+export const customerForgotPasswordSchema = z.object({
+  email: normalizedEmail,
+}).strict();
+
+export const customerResetPasswordSchema = z.object({
+  token: z.string().trim().min(32).max(256),
+  password: strongPassword,
+}).strict();
+
+export const customerEmailVerifyTokenSchema = z.object({
+  token: z.string().trim().min(32).max(256),
 }).strict();
 
 export const customerMetaUpdateSchema = z

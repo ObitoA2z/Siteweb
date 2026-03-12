@@ -1,3 +1,4 @@
+import "./load-env";
 import { createService, createSlot, getDb, listServices, runPendingMigrations } from "../lib/db";
 import { minutesToTimeString, todayInParis, zonedLocalToUtcIso } from "../lib/time";
 

@@ -20,8 +20,13 @@ export function AdminCustomersManager({ initialAccounts }: Props) {
   const [accounts, setAccounts] = useState<CustomerAccountSummary[]>(initialAccounts);
   const [query, setQuery] = useState("");
   const [provider, setProvider] = useState<"" | "email" | "google" | "email+google">("");
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(30);
+  const [total, setTotal] = useState(initialAccounts.length);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
 
   const stats = useMemo(
     () => ({
@@ -35,22 +40,44 @@ export function AdminCustomersManager({ initialAccounts }: Props) {
     [accounts],
   );
 
-  async function reload() {
+  async function reload(targetPage = page) {
     setBusy(true);
     setMessage("");
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
     if (provider) params.set("provider", provider);
+    params.set("page", String(targetPage));
+    params.set("pageSize", String(pageSize));
 
     const response = await fetch(`/api/admin/customers?${params.toString()}`);
-    const data = (await response.json().catch(() => ({}))) as { error?: string } | CustomerAccountSummary[];
-    if (!response.ok || !Array.isArray(data)) {
-      setMessage(!Array.isArray(data) ? (data.error ?? "Chargement impossible.") : "Chargement impossible.");
+    const data = (await response.json().catch(() => ({}))) as
+      | { error?: string }
+      | CustomerAccountSummary[]
+      | { items: CustomerAccountSummary[]; total: number; page: number; pageSize: number };
+    if (!response.ok) {
+      const errorData = data as { error?: string };
+      setMessage(errorData.error ?? "Chargement impossible.");
       setBusy(false);
       return;
     }
 
-    setAccounts(data);
+    if (Array.isArray(data)) {
+      setAccounts(data);
+      setTotal(data.length);
+      setPage(targetPage);
+      setBusy(false);
+      return;
+    }
+
+    if ("items" in data && Array.isArray(data.items)) {
+      setAccounts(data.items);
+      setTotal(data.total);
+      setPage(data.page);
+      setBusy(false);
+      return;
+    }
+
+    setMessage("Chargement impossible.");
     setBusy(false);
   }
 
@@ -152,7 +179,7 @@ export function AdminCustomersManager({ initialAccounts }: Props) {
             <option value="google">google</option>
             <option value="email+google">email+google</option>
           </select>
-          <button type="button" onClick={reload} className="btn-main" disabled={busy}>
+          <button type="button" onClick={() => reload(1)} className="btn-main" disabled={busy}>
             Filtrer
           </button>
           <button
@@ -160,7 +187,7 @@ export function AdminCustomersManager({ initialAccounts }: Props) {
             onClick={() => {
               setQuery("");
               setProvider("");
-              void reload();
+              void reload(1);
             }}
             className="btn-soft"
             disabled={busy}
@@ -170,12 +197,22 @@ export function AdminCustomersManager({ initialAccounts }: Props) {
         </div>
 
         <div className="flex flex-wrap gap-2 text-xs">
-          <span className="rounded-full bg-white px-3 py-1 font-semibold">Total: {stats.total}</span>
+          <span className="rounded-full bg-white px-3 py-1 font-semibold">Page: {page}/{pageCount}</span>
+          <span className="rounded-full bg-white px-3 py-1 font-semibold">Total filtres: {total}</span>
           <span className="rounded-full bg-[#fff4e9] px-3 py-1 font-semibold">Email: {stats.email}</span>
           <span className="rounded-full bg-[#eaf8ff] px-3 py-1 font-semibold">Google: {stats.google}</span>
           <span className="rounded-full bg-[#ffeef2] px-3 py-1 font-semibold">Email+Google: {stats.both}</span>
           <span className="rounded-full bg-[#eafaf0] px-3 py-1 font-semibold">VIP: {stats.vip}</span>
           <span className="rounded-full bg-[#fff0f0] px-3 py-1 font-semibold">Blacklist: {stats.blacklisted}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button type="button" className="btn-soft text-sm" onClick={() => reload(Math.max(1, page - 1))} disabled={busy || page <= 1}>
+            Prec.
+          </button>
+          <button type="button" className="btn-soft text-sm" onClick={() => reload(Math.min(pageCount, page + 1))} disabled={busy || page >= pageCount}>
+            Suiv.
+          </button>
         </div>
       </article>
 
