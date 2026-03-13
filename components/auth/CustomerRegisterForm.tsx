@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export function CustomerRegisterForm() {
+export function CustomerRegisterForm({ initialReferralCode = "" }: { initialReferralCode?: string }) {
   const router = useRouter();
   const [form, setForm] = useState({
     name: "",
@@ -12,6 +12,7 @@ export function CustomerRegisterForm() {
     phone: "",
     password: "",
     website: "",
+    referralCode: initialReferralCode,
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [formStartedAt] = useState<number>(() => Date.now());
@@ -44,6 +45,7 @@ export function CustomerRegisterForm() {
           password: form.password,
           website: form.website,
           formStartedAt,
+          ...(form.referralCode.trim() ? { referralCode: form.referralCode.trim() } : {}),
         }),
       });
 
@@ -146,6 +148,25 @@ export function CustomerRegisterForm() {
           minLength={12}
           required
         />
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="register-referral" className="block text-sm font-semibold">
+          Code de parrainage (optionnel)
+        </label>
+        <input
+          id="register-referral"
+          value={form.referralCode}
+          maxLength={20}
+          autoComplete="off"
+          placeholder="Ex : AB12CD"
+          onChange={(event) =>
+            setForm((prev) => ({ ...prev, referralCode: event.target.value.toUpperCase() }))
+          }
+        />
+        <p className="text-xs text-[#8a6578]">
+          Si une amie t&apos;a recommande le salon, saisis son code ici.
+        </p>
       </div>
 
       <div className="hidden" aria-hidden>

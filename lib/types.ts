@@ -129,3 +129,42 @@ export interface EmailOutboxPage {
   page: number;
   pageSize: number;
 }
+
+export type LoyaltyEventType = "booking_confirmed" | "reward_applied" | "referral_earned";
+
+export interface LoyaltyEvent {
+  id: number;
+  customerId: number;
+  eventType: LoyaltyEventType;
+  points: number;
+  bookingId: number | null;
+  description: string | null;
+  createdAt: string;
+}
+
+export interface CustomerToReengage {
+  customerId: number | null;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  lastBookingAt: string;
+  lastServiceName: string;
+  totalConfirmedBookings: number;
+  loyaltyPoints: number;
+  weeksSinceLastVisit: number;
+}
+
+export interface LoyaltyStatus {
+  customerId: number | null;
+  totalPoints: number;
+  confirmedBookings: number;
+  nextRewardAt: number;
+  discountPercent: number;
+}
+
+export interface ReferralInfo {
+  referralCode: string;
+  totalReferrals: number;
+  rewardedReferrals: number;
+  pendingReferrals: number;
+}

@@ -10,6 +10,8 @@ const links = [
   { href: "/admin/bookings", label: "Reservations" },
   { href: "/admin/waitlist", label: "Attente" },
   { href: "/admin/customers", label: "Comptes" },
+  { href: "/admin/relances", label: "Relances" },
+  { href: "/admin/fidelite", label: "Fidelite" },
   { href: "/admin/emails", label: "Emails" },
   { href: "/admin/audit", label: "Journal" },
 ];

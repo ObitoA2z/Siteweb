@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createCustomerUser, createEmailVerificationToken } from "@/lib/db";
 import { env } from "@/lib/env";
 import { sendEmailVerificationEmail } from "@/lib/email";
+import { getCustomerByReferralCode, registerReferral } from "@/lib/loyalty";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getClientIp, requireBodySize, requireJsonRequest, requireTrustedOrigin } from "@/lib/security";
 import { customerRegisterSchema } from "@/lib/validation";
@@ -73,6 +74,15 @@ export async function POST(request: NextRequest) {
     // L'attaquant ne peut pas distinguer "email déjà pris" de "inscription réussie".
     // On retourne un 201 fictif — l'utilisateur recevra un email s'il est nouveau.
     return NextResponse.json({ ok: true }, { status: 201 });
+  }
+
+  // Enregistrer le parrainage si un code valide a été fourni
+  const referralCodeInput = parsed.data.referralCode?.trim().toUpperCase();
+  if (referralCodeInput) {
+    const referrer = getCustomerByReferralCode(referralCodeInput);
+    if (referrer && referrer.id !== user.id) {
+      registerReferral(referrer.id, user.id);
+    }
   }
 
   const verification = createEmailVerificationToken(user.email);

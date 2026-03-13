@@ -2092,8 +2092,8 @@ export function confirmBooking(bookingId: number): { booking: Booking | null; ch
 
   const tx = db.transaction((id: number) => {
     const booking = db
-      .prepare("SELECT id, status FROM bookings WHERE id = ?")
-      .get(id) as { id: number; status: BookingStatus } | undefined;
+      .prepare("SELECT id, status, customer_email AS customerEmail FROM bookings WHERE id = ?")
+      .get(id) as { id: number; status: BookingStatus; customerEmail: string } | undefined;
 
     if (!booking) {
       return { booking: null, changed: false };
@@ -2107,6 +2107,22 @@ export function confirmBooking(bookingId: number): { booking: Booking | null; ch
     if (booking.status !== "confirmed") {
       db.prepare("UPDATE bookings SET status = 'confirmed' WHERE id = ?").run(id);
       changed = true;
+
+      // Créditer le point fidélité et éventuellement récompenser la marraine
+      const customerRow = db
+        .prepare("SELECT id FROM customer_users WHERE lower(email) = lower(?)")
+        .get(booking.customerEmail) as { id: number } | undefined;
+
+      if (customerRow) {
+        // Import dynamique pour éviter la dépendance circulaire db ↔ loyalty
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { creditBookingConfirmedPoint, rewardReferrerIfEligible } = require("@/lib/loyalty") as {
+          creditBookingConfirmedPoint: (customerId: number, bookingId: number) => void;
+          rewardReferrerIfEligible: (referredId: number) => void;
+        };
+        creditBookingConfirmedPoint(customerRow.id, id);
+        rewardReferrerIfEligible(customerRow.id);
+      }
     }
 
     return { booking: getBookingById(id), changed };

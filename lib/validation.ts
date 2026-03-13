@@ -225,6 +225,7 @@ export const customerRegisterSchema = z.object({
   password: strongPassword,
   website: z.string().optional().default(""),
   formStartedAt: z.number().int().positive().optional(),
+  referralCode: z.string().trim().max(20).optional(),
 }).strict();
 
 export const customerLoginSchema = z.object({

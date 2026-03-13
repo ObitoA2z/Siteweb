@@ -5,7 +5,13 @@ import { getServerSession } from "next-auth";
 import { CustomerBookingsList } from "@/components/account/CustomerBookingsList";
 import { CustomerSignOutButton } from "@/components/auth/CustomerSignOutButton";
 import { customerAuthOptions } from "@/lib/customerAuth";
-import { listBookingsByCustomerEmail } from "@/lib/db";
+import { getCustomerUserByEmail, listBookingsByCustomerEmail } from "@/lib/db";
+import {
+  getLoyaltyStatus,
+  getOrCreateReferralCode,
+  LOYALTY_REWARD_DISCOUNT,
+  LOYALTY_REWARD_THRESHOLD,
+} from "@/lib/loyalty";
 
 export default async function CustomerAccountPage() {
   const session = await getServerSession(customerAuthOptions);
@@ -15,6 +21,10 @@ export default async function CustomerAccountPage() {
 
   const customerEmail = session.user.email ?? "";
   const bookings = customerEmail ? listBookingsByCustomerEmail(customerEmail) : [];
+
+  const customerUser = customerEmail ? getCustomerUserByEmail(customerEmail) : null;
+  const loyalty = customerUser ? getLoyaltyStatus(customerUser.id) : null;
+  const referralCode = customerUser ? getOrCreateReferralCode(customerUser.id) : null;
 
   const confirmedCount = bookings.filter((b) => b.status === "confirmed").length;
   const pendingCount = bookings.filter((b) => b.status === "pending").length;
@@ -105,6 +115,75 @@ export default async function CustomerAccountPage() {
         </div>
         <CustomerBookingsList initialBookings={bookings} />
       </section>
+
+      {/* Programme fidélité */}
+      {loyalty && (
+        <section className="card mx-auto max-w-3xl p-5 sm:p-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">⭐</span>
+            <h2 className="text-xl font-bold">Mes points fidélité</h2>
+          </div>
+
+          {loyalty.discountPercent > 0 ? (
+            <div className="rounded-xl bg-gradient-to-br from-[#fff0e8] to-[#fce8f3] p-4 space-y-1">
+              <p className="font-bold text-[#c48fa3]">
+                Félicitations ! Tu as une remise -{loyalty.discountPercent}% disponible.
+              </p>
+              <p className="text-sm text-[#5f4754]">
+                Mentionne-le lors de ta prochaine réservation pour en bénéficier.
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-xl bg-[#fdf7f9] p-4 space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-[#5f4754]">Progression vers -{LOYALTY_REWARD_DISCOUNT}%</span>
+                <span className="font-bold">
+                  {loyalty.totalPoints}/{LOYALTY_REWARD_THRESHOLD} pts
+                </span>
+              </div>
+              <div className="h-2 rounded-full bg-[#e8d5de] overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-[#c48fa3] transition-all"
+                  style={{
+                    width: `${Math.min(100, (loyalty.totalPoints % LOYALTY_REWARD_THRESHOLD) / LOYALTY_REWARD_THRESHOLD * 100)}%`,
+                  }}
+                />
+              </div>
+              <p className="text-xs text-[#8a6578]">
+                Encore {loyalty.nextRewardAt} séance{loyalty.nextRewardAt > 1 ? "s" : ""} pour
+                obtenir ta remise de -{LOYALTY_REWARD_DISCOUNT}%
+              </p>
+            </div>
+          )}
+
+          <p className="text-xs text-[#8a6578]">
+            Total : <strong>{loyalty.totalPoints} points</strong> •{" "}
+            {loyalty.confirmedBookings} séance{loyalty.confirmedBookings > 1 ? "s" : ""} confirmée{loyalty.confirmedBookings > 1 ? "s" : ""}
+          </p>
+        </section>
+      )}
+
+      {/* Parrainage */}
+      {referralCode && (
+        <section className="card mx-auto max-w-3xl p-5 sm:p-6 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">🎁</span>
+            <h2 className="text-xl font-bold">Parraine une amie</h2>
+          </div>
+          <p className="text-sm text-[#5f4754]">
+            Partage ton code à une amie. Quand elle confirme sa première réservation, tu gagnes{" "}
+            <strong>+2 points fidélité</strong> !
+          </p>
+          <div className="flex items-center gap-3 flex-wrap">
+            <code className="rounded-xl bg-[#f5eef1] px-4 py-2 text-lg font-mono font-bold text-[#c48fa3] tracking-widest">
+              {referralCode}
+            </code>
+            <p className="text-xs text-[#8a6578]">
+              À saisir lors de l&apos;inscription sur le site.
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Aide */}
       <section className="card mx-auto max-w-3xl p-4 sm:p-5 space-y-2">
